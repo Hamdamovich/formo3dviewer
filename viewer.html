@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Maket Ko'rish</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #121212;
+            overflow: hidden;
+            font-family: sans-serif;
+        }
+        model-viewer {
+            width: 100%;
+            height: 100%;
+        }
+        /* Ekran yuqorisidagi chiroyli boshqaruv tugmalari */
+        .controls-panel {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px 15px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+        .controls-panel button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .controls-panel button:hover {
+            background: #1d4ed8;
+        }
+        .controls-panel button.active {
+            background: #10b981;
+        }
+    </style>
+    <!-- model-viewer kutubxonasi -->
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js"></script>
+</head>
+<body>
+
+    <!-- Xonalarni bir bosishda almashtirish tugmalari (id lar qo'shildi) -->
+    <div class="controls-panel">
+        <button onclick="changeModel('glb/room_44_51.glb', this)" id="btn-44">44.51 Xona</button>
+        <button onclick="changeModel('glb/room_54_10.glb', this)" id="btn-54">54.10 Xona</button>
+        <button onclick="changeModel('glb/room_61_64.glb', this)" id="btn-61">61.64 Xona</button>
+    </div>
+
+    <!-- 3D Model ko'rsatuvchi qism -->
+    <model-viewer id="viewer" src="glb/room_44_51.glb" ar camera-controls auto-rotate shadow-intensity="1">
+    </model-viewer>
+
+    <script>
+        const viewer = document.getElementById('viewer');
+        
+        // URL'dan model parametrini o'qib olish
+        const urlParams = new URLSearchParams(window.location.search);
+        const modelPath = urlParams.get('model');
+        
+        if (modelPath) {
+            viewer.setAttribute('src', modelPath);
+            
+            // Qaysi xona kelganiga qarab tegishli tugmani aktiv qilish
+            document.querySelectorAll('.controls-panel button').forEach(b => b.classList.remove('active'));
+            if (modelPath.includes('44_51')) {
+                document.getElementById('btn-44').classList.add('active');
+            } else if (modelPath.includes('54_10')) {
+                document.getElementById('btn-54').classList.add('active');
+            } else if (modelPath.includes('61_64')) {
+                document.getElementById('btn-61').classList.add('active');
+            }
+        }
+
+        // Tugma bosilganda modelni o'zgartiruvchi funksiya
+        function changeModel(path, btn) {
+            viewer.setAttribute('src', path);
+            
+            // Tugmalarning rangini o'zgartirish (aktiv holat)
+            document.querySelectorAll('.controls-panel button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+    </script>
+</body>
+</html>
